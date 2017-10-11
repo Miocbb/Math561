@@ -9,6 +9,7 @@ typedef struct
 
 Dvector *CreateDvector(int dim);
 void DeleteDvector(Dvector **pVect);
+void DeleteDvectorList(int count, Dvector **pX, ...);
 
 void RandomDvector(Dvector *pVect);
 void InitDvector(Dvector *pVect, double *pArray);

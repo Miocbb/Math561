@@ -1,5 +1,4 @@
 /* the matrix is saved in 1-d array by column-major*/
-
 #ifndef _MATRIX
 #define _MATRIX
 
@@ -14,6 +13,7 @@ typedef struct
 
 Dmatrix *CreateDmatrix(int DimRow, int DimCol);
 void DeleteDmatrix(Dmatrix **pMatrix);
+void DeleteDmatrixList(int count, Dmatrix **pMatrix, ...);
 
 void InitDmatrix(Dmatrix *pMatrix, double *pArray);
 void ShowDmatrix(Dmatrix *pMatrix);
@@ -30,20 +30,10 @@ void TransposeDmatrix(Dmatrix *pMatrixOut, Dmatrix *pMatrix);
 void DmatrixExpansionByCol(Dmatrix *pMatrix1, Dmatrix *pMatrix2);
 void DmatrixExpansionByRow(Dmatrix *pMatrix1, Dmatrix *pMatrix2);
 
-/*
-DoubleMatrix *CreateDoubleMatrix(int nDimRow, int nDimCol);
-void InitDoubleMatrix(DoubleMatrix *pMatrix, double *pArray);
-void InitDoubleMatrixRow(DoubleMatrix *pMatrix, double *pArray, int Row);
-void InitDoubleMatrixCol(DoubleMatrix *pMatrix, double *pArray, int Col);
-void DeleteDoubleMatrix(DoubleMatrix *pMatrix);
-void ShowDoubleMatrix(DoubleMatrix *pMatrix);
+void CBLAS_DSYMV(double *YVec, double *AMat, double *XVec, int N);
+void CopyDmatrix(Dmatrix *pA, Dmatrix *pB);
+void Lapack_Dtrtri(Dmatrix *pA, Dmatrix *pB);
+void Lapack_Dgemv(Dvector *pY, Dmatrix *pA, Dvector *pX);
 
-DoubleVector *ExtractMatrixRow(DoubleMatrix *pMatrix, int Row);
-DoubleVector *ExtractMatrixCol(DoubleMatrix *pMatrix, int Col);
-DoubleMatrix *MatrixTranspose(DoubleMatrix *pMatrix);
-DoubleMatrix *MatrixExpansionByCol(DoubleMatrix *pMatrix1, DoubleMatrix *pMatrix2);
-DoubleMatrix *MatrixExpansionByRow(DoubleMatrix *pMatrix1, DoubleMatrix *pMatrix2);
-
-DoubleMatrix *MatrixMultiplication(DoubleMatrix *pMatrix_1, DoubleMatrix *pMatrix_2);
-*/
+void SolveUpTriMatrixEq(Dmatrix *pR, Dvector *pX, Dvector *pb);
 #endif
