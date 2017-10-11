@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
+#include<stdarg.h>
 #include"lapack.h"
 #include"matrix.h"
 #include"vector.h"
@@ -23,6 +24,18 @@ void DeleteDmatrix(Dmatrix **pMatrix)
         free(*pMatrix);
         *pMatrix = NULL;
     }
+}
+
+void DeleteDmatrixList(int count, Dmatrix **pMatrix, ...)
+{
+    DeleteDmatrix(pMatrix);
+
+    va_list list;
+    int i;
+    va_start(list, pMatrix);
+    for(i=0; i < count-1; i++)
+        DeleteDmatrix( va_arg(list, Dmatrix**) );
+    va_end(list);
 }
 
 void InitDmatrix(Dmatrix *pMatrix, double *pArray)
@@ -61,6 +74,25 @@ void InitDmatrixRow(Dmatrix *pMatrix, double *pArray, int Row)
     dcopy_(&(pMatrix->nDimCol), pArray, &inc,
             &(pMatrix->data[Row]), &(pMatrix->nDimRow));
 }
+
+
+void CopyDmatrix(Dmatrix *pA, Dmatrix *pB)
+    /*A= B*/
+{
+    if(pA == NULL || pB == NULL)
+    {
+        printf("CopyDmatrix: Copy matrix failed! \n");
+        return;
+    }
+
+    pA->nDimCol = pB->nDimCol;
+    pA->nDimRow = pB->nDimRow;
+
+    int inc = 1;
+    int size = (pB->nDimCol) * (pB->nDimRow);
+    dcopy_(&size, pB->data, &inc, pA->data, &inc);
+}
+
 
 void InitDmatrixCol(Dmatrix *pMatrix, double *pArray, int Col)
 {
@@ -178,21 +210,36 @@ void DmatrixMulti_TT(Dmatrix *pA, Dmatrix *pB, Dmatrix *pC)
         return;
 }
 
-void TransposeDmatrix(Dmatrix *pAT, Dmatrix *pA)
+void TransposeDmatrix(Dmatrix *pB, Dmatrix *pA)
+    /*B := A(T)*/
 {
-    if(pA == NULL || pAT == NULL){
+    if(pA == NULL || pB == NULL){
         printf("TransposeDmatrix: Matrix is NULL! Transpose input matrix fail!\n");
         return;
     }
     int i;
     Dvector *temp;
-    temp = CreateDvector(pAT->nDimCol);
+    Dmatrix *pMatrix_tem;
+
+    pB->nDimCol=pA->nDimRow;
+    pB->nDimRow=pA->nDimCol;
+
+    temp = CreateDvector(pA->nDimCol);
+    if(pA == pB){
+        pMatrix_tem = CreateDmatrix(pA->nDimRow, pA->nDimCol);
+        CopyDmatrix(pMatrix_tem, pA);
+    }
+    else
+        pMatrix_tem = pA;
+
     for(i=0; i<pA->nDimRow; i++)
     {
-        ExtractDmatrixRow(temp, pA, i);
-        InitDmatrixCol(pAT, temp->data, i);
+        ExtractDmatrixRow(temp, pMatrix_tem, i);
+        InitDmatrixCol(pB, temp->data, i);
     }
     DeleteDvector(&temp);
+    if(pA == pB)
+        DeleteDmatrix(&pMatrix_tem);
 }
 
 void DmatrixExpansionByCol(Dmatrix *pA, Dmatrix *pB)
@@ -242,4 +289,27 @@ void DmatrixExpansionByRow(Dmatrix *pA, Dmatrix *pB)
     dcopy_(&dim, ptem->data, &inc, pA->data, &inc);
     pA->nDimRow = pA->nDimRow+pB->nDimRow;
     DeleteDmatrix(&ptem);
+}
+
+
+void SolveUpTriMatrixEq(Dmatrix *pR, Dvector *pX, Dvector *pb)
+    /* RX = b
+     * Solve the linear matrix equation for X.
+     * R is a full rank upper triangular matrix;
+     * X, b is a double vector;
+     * */
+{
+    int i, j;
+    int dim;
+
+    dim = pR->nDimCol;
+
+    for(i=dim-1; i >= 0; i--)
+    {
+        for(j=dim-1; j> i; j--)
+        {
+            pb->data[i] -= pR->data[j*dim+i] * pX->data[j];
+        }
+        pX->data[i] = pb->data[i] / pR->data[i*dim+i];
+   }
 }

@@ -2,8 +2,10 @@
 #include<stdlib.h>
 #include<math.h>
 #include<time.h>
+#include<stdarg.h>
 #include"vector.h"
 #include"lapack.h"
+#include"matrix.h"
 
 Dvector *CreateDvector(int dim)
 {
@@ -22,6 +24,17 @@ void DeleteDvector(Dvector **pX)
         free(*pX);
         *pX = NULL;
     }
+}
+
+void DeleteDvectorList(int count, Dvector **pX, ...)
+{
+    DeleteDvector(pX);
+    int i;
+    va_list list;
+    va_start(list, pX);
+    for(i=0; i < count-1; i++)
+        DeleteDvector( va_arg(list, Dvector **) );
+    va_end(list);
 }
 
 void InitDvector(Dvector *pX, double *pArray)
@@ -158,3 +171,15 @@ void RandomDvector(Dvector *pX)
     int idist=2;
     dlarnv_(&idist, seed, &(pX->dim), pX->data);
 }
+
+
+void Lapack_Dgemv(Dvector *pY, Dmatrix *pA, Dvector *pX)
+    /* Y = A*X */
+{
+    double beta = 0;
+    double alpha = 1;
+    int inc = 1;
+    dgemv_("N", &(pA->nDimRow), &(pA->nDimCol), &alpha,
+            pA->data, &(pA->nDimRow), pX->data, &inc, &beta,
+            pY->data, &inc);
+} 
