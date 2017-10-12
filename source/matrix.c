@@ -2,6 +2,7 @@
 #include<stdlib.h>
 #include<string.h>
 #include<stdarg.h>
+#include<time.h>
 #include"lapack.h"
 #include"matrix.h"
 #include"vector.h"
@@ -36,6 +37,26 @@ void DeleteDmatrixList(int count, Dmatrix **pMatrix, ...)
     for(i=0; i < count-1; i++)
         DeleteDmatrix( va_arg(list, Dmatrix**) );
     va_end(list);
+}
+
+void RandomDmatrix(Dmatrix *pMatrix)
+    /*generate random double matrix
+     *all entries have normal distrubution between (-1,1)*/
+{
+    int seed[4];
+    time_t t;
+    srand((unsigned) time(&t));
+    int i;
+    int size;
+    size = pMatrix->nDimCol * pMatrix->nDimRow;
+    for(i=0; i< 4; i++){
+        if(i!=3)
+            seed[i] = rand() % 4095;
+        else
+            seed[i] = (rand() % 4095)/2+1;
+    }
+    int idist=2;
+    dlarnv_(&idist, seed, &(size), pMatrix->data);
 }
 
 void InitDmatrix(Dmatrix *pMatrix, double *pArray)
