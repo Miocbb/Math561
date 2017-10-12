@@ -15,6 +15,7 @@ Dmatrix *CreateDmatrix(int DimRow, int DimCol);
 void DeleteDmatrix(Dmatrix **pMatrix);
 void DeleteDmatrixList(int count, Dmatrix **pMatrix, ...);
 
+void RandomDmatrix(Dmatrix *pMatrix);
 void InitDmatrix(Dmatrix *pMatrix, double *pArray);
 void ShowDmatrix(Dmatrix *pMatrix);
 void InitDmatrixRow(Dmatrix *pMatrix, double *pArray, int Row);
