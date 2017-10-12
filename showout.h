@@ -1,1 +1,0 @@
-int Output_QR();
