@@ -3,60 +3,72 @@
 #include"matrix.h"
 #include"vector.h"
 #include"QR.h"
-
+#include"least_square.h"
 
 void ReadCSV( Dmatrix *pMatrix, char * file);
 void ReadCSV_Col( Dvector *pVector, char * file, int Col);
 
 int main()
 {
-    /* AX ~ b 
-     * least square problem
-     */
-    Dmatrix *pA, *pQ_A, *pR_A;
-    Dmatrix *pR_Inv_A, *pQ_T_A;
-    Dvector *pb, *pX, *pQb;
+    /*******************************
+     * HW4_a: least square problem
+     * AX ~ b 
+     *******************************/
+    printf("HW4: (a)\n");
+    Dmatrix *pA;
+    Dvector *pResi, *pAX;
+    Dvector *pb, *pX;
 
     pA = CreateDmatrix(4898,11);
     pb = CreateDvector(4898);
     pX = CreateDvector(11);
-    pQ_A = CreateDmatrix(4898,11);
-    pR_A = CreateDmatrix(11,11);
-    pR_Inv_A = CreateDmatrix(11,11);
-    pQ_T_A = CreateDmatrix(11, 4898);
-    pQb = CreateDvector(11);
+    pResi = CreateDvector(4898);
+    pAX   = CreateDvector(4898);
+    
+    /*load matrix A and vector b*/
     ReadCSV(pA, "datasets/HW4.csv");
     ReadCSV_Col(pb, "datasets/HW4.csv", 12);
 
-    /* do modified GS_QR */
-    MGS_QR(pA, pQ_A, pR_A);
-
-    //Lapack_Dtrtri(pR_Inv_A, pR_A); /*get the inverse of R*/
-    TransposeDmatrix(pQ_T_A, pQ_A); /*get transpose of Q*/
-    Lapack_Dgemv(pQb, pQ_T_A, pb); /* Qb = Q*T * b */
-    //Lapack_Dgemv(pX, pR_Inv_A, pQb); /* X = R^-1 * Qb */
-
-    
-    SolveUpTriMatrixEq(pR_A, pX, pQb);
-    printf("coefficient vector Beta:\n");
-    SolveUpTriMatrixEq(pR_A, pX, pQb);
+    LeastSquare(pA, pX, pb);
+    printf("Coefficient vector Beta:\n");
     ShowDvector(pX);
 
-    Dvector *pResi, *pAX;
-    pResi = CreateDvector(4898);
-    pAX  = CreateDvector(4898);
+    /*show Residue*/
     Lapack_Dgemv(pAX, pA, pX);
-    DvectorArithmetic(pResi, 1, pAX, -1, pb );
+    DvectorArithmetic(pResi, 1, pAX, -1, pb ); /*Resi = AX - b*/
+    printf("Residue: %f\n", Dvector_2Norm(pResi));
+    DeleteDvector(&pX);
+
+    /*************************************** 
+     * HW4_b: modified least square problem
+     * AX+C ~ b
+     *****************************************/
+    printf("\nHW4: (b)\n");
+    Dvector *pC;
+    pC = CreateDvector(4898);
+    pX = CreateDvector(12);
+    for(int i=0; i < pC->dim; i++)
+        pC->data[i]  = 1;
+
+    DmatrixExpansionByColVect(pA, pC); /* A := A(left) + C(right)*/
+    LeastSquare(pA, pX, pb);
+    printf("Coefficient vector Beta:\n");
+    ShowDvector(pX);
+    printf("Constant vector C: %f\n", pX->data[11]);
+
+    /*Show Residue*/
+    Lapack_Dgemv(pAX, pA, pX);
+    DvectorArithmetic(pResi, 1, pAX, -1, pb ); /* Resi = AX -b */
     printf("Residue: %f\n", Dvector_2Norm(pResi));
 
-    DeleteDmatrixList( 5, &pA, &pQ_A, &pR_A, &pR_Inv_A, &pQ_T_A);
-    DeleteDvectorList( 5, &pb, &pX, &pQb, &pResi, &pAX);
+    /*clean up*/
+    DeleteDmatrixList(1, &pA);
+    DeleteDvectorList(2, &pb, &pX);
 }
 
 
 void ReadCSV( Dmatrix *pMatrix, char * file)
-    /* return: a Dmatrix
-    */
+    /* return: a Dmatrix*/
 {
     FILE *fp;
     int i = 0;

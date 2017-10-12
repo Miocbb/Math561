@@ -263,6 +263,26 @@ void TransposeDmatrix(Dmatrix *pB, Dmatrix *pA)
         DeleteDmatrix(&pMatrix_tem);
 }
 
+void DmatrixExpansionByColVect(Dmatrix *pA, Dvector *pX)
+    /*A := A(left) + X(right)*/
+{
+    if(pA == NULL || pX == NULL)
+    {
+        printf("DmatrixExpansionByColVect: expansion failed, matrix or vector is null!\n");
+        return;
+    }
+    if(pA->nDimRow != pX->dim)
+    {
+        printf("DmatrixExpansionByColVect: expansion failed, size not matched!\n");
+        return; 
+    }
+    int dim = pA->nDimRow*pA->nDimCol;
+    int inc = 1;
+    pA->data = (double *)realloc(pA->data, (dim + pX->dim)*sizeof(double));
+    dcopy_(&(pX->dim), pX->data, &inc, &(pA->data[pA->nDimCol*pA->nDimRow]), &inc);
+    pA->nDimCol = pA->nDimCol+1;
+}
+
 void DmatrixExpansionByCol(Dmatrix *pA, Dmatrix *pB)
 /* A := A(left) + B(right); matrix expansion along column*/
 {

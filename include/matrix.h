@@ -28,6 +28,7 @@ void DmatrixMulti_TN(Dmatrix *pMatrixOut, Dmatrix *pMatrix1, Dmatrix *pMatrix2);
 void DmatrixMulti_NT(Dmatrix *pMatrixOut, Dmatrix *pMatrix1, Dmatrix *pMatrix2);
 void DmatrixMulti_TT(Dmatrix *pMatrixOut, Dmatrix *pMatrix1, Dmatrix *pMatrix2);
 void TransposeDmatrix(Dmatrix *pMatrixOut, Dmatrix *pMatrix);
+void DmatrixExpansionByColVect(Dmatrix *pA, Dvector *pX);
 void DmatrixExpansionByCol(Dmatrix *pMatrix1, Dmatrix *pMatrix2);
 void DmatrixExpansionByRow(Dmatrix *pMatrix1, Dmatrix *pMatrix2);
 
