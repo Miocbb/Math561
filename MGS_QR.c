@@ -31,8 +31,9 @@ int MGS_qr(double *pInput, int InputRow, int InputCol)
     printf(" Modified GS QR factorization\n");
     printf("*******************************\n");
     
-    Dmatrix *pA, *pQ, *pR;
+    Dmatrix *pA, *pQ, *pR, *pV;
     pA = CreateDmatrix(InputRow, InputCol);
+    pV = CreateDmatrix(InputRow, InputCol);
     pQ = CreateDmatrix(InputRow, InputCol);
     pR = CreateDmatrix(InputCol, InputCol);
     
@@ -52,10 +53,11 @@ int MGS_qr(double *pInput, int InputRow, int InputCol)
     int i, j;
     double r_jj; /* the diagonal element of R*/
     double r_ij;
+
+    CopyDmatrix(pV, pA);
     for(i=0; i < pA->nDimCol; i++)
     {
-        ExtractDmatrixCol(pA_i, pA, i);
-        CopyDvector(pV_i, pA_i);
+        ExtractDmatrixCol(pV_i, pV, i);
         r_jj = Dvector_2Norm(pV_i);
         pR->data[i + i*(pR->nDimRow)] = r_jj;
         if(r_jj == 0)
@@ -71,7 +73,7 @@ int MGS_qr(double *pInput, int InputRow, int InputCol)
                     for(k=0; k<i; k++)
                     {
                         ExtractDmatrixCol(pQ_i, pQ, k);
-                        DvectorArithmetic(pV_i, 1, pV_i, -DvectorIP(pQ_i, pV_i), pV_i);
+                        DvectorArithmetic(pV_i, 1, pV_i, -DvectorIP(pQ_i, pV_i), pQ_i);
                     }
                 }
                 norm = Dvector_2Norm(pV_i);
@@ -82,14 +84,14 @@ int MGS_qr(double *pInput, int InputRow, int InputCol)
             DvectorScalar(pQ_i, 1/r_jj, pV_i);
         }
         InitDmatrixCol(pQ, pQ_i->data, i);
-        /*update A column vector: V_i+1 to V_n*/
-        for(j=i+1; j < pA->nDimCol; j++)
+        /*update V column vector: V_i+1 to V_n*/
+        for(j=i+1; j < pV->nDimCol; j++)
         {
-            ExtractDmatrixCol(pV_i, pA, j);
+            ExtractDmatrixCol(pV_i, pV, j);
             r_ij = DvectorIP(pQ_i, pV_i);
             pR->data[i + j*(pR->nDimRow)] = r_ij;
             DvectorArithmetic(pV_i, 1, pV_i, -r_ij, pQ_i);
-            InitDmatrixCol(pA, pV_i->data, j);
+            InitDmatrixCol(pV, pV_i->data, j);
         }
     }
     Output_QR(pQ, pR);
@@ -106,7 +108,7 @@ int MGS_qr(double *pInput, int InputRow, int InputCol)
         int i, col_Q_Expd;
         col_Q_Expd = pQ->nDimRow - pQ->nDimCol;
 
-        pQ_Expd = CreateDmatrix(pQ->nDimRow, col_Q_Expd);
+        pQ_Expd = CreateDmatrix(pQ->nDimRow, 1);
         pQ_Expd_i  = CreateDvector(pQ->nDimRow);
         for(i=0; i< col_Q_Expd; i++)
         {
@@ -126,8 +128,8 @@ int MGS_qr(double *pInput, int InputRow, int InputCol)
             printf("Cycle %d times to find othogonal vector to do full QR!\n", count);
             DvectorScalar(pQ_Expd_i, 1/norm, pQ_Expd_i);
             InitDmatrixCol(pQ_Expd, &(pQ_Expd_i->data[0]), i);
+            DmatrixExpansionByCol(pQ, pQ_Expd);
         }
-        DmatrixExpansionByCol(pQ, pQ_Expd);
         DeleteDmatrix(&pQ_Expd);
 
         Dmatrix *pR_Expd;

@@ -115,7 +115,7 @@ int GS_QR(double *pInput, int InputRow, int InputCol)
     printf("****************************** \n");
     printf("  Show full QR factorization\n");
     printf("****************************** \n");
-    if(pA->nDimCol<pA->nDimRow)
+    if(pA->nDimCol < pA->nDimRow)
     {
         Dmatrix *pQ_Expd; 
         Dvector *pQ_Expd_i;
@@ -123,7 +123,7 @@ int GS_QR(double *pInput, int InputRow, int InputCol)
         int i, col_Q_Expd;
         col_Q_Expd = pQ->nDimRow - pQ->nDimCol;
 
-        pQ_Expd = CreateDmatrix(pQ->nDimRow, col_Q_Expd);
+        pQ_Expd = CreateDmatrix(pQ->nDimRow, 1);
         pQ_Expd_i  = CreateDvector(pQ->nDimRow);
         for(i=0; i< col_Q_Expd; i++)
         {
@@ -143,8 +143,8 @@ int GS_QR(double *pInput, int InputRow, int InputCol)
             printf("Cycle %d times to find othogonal vector to do full QR!\n", count);
             DvectorScalar(pQ_Expd_i, 1/norm, pQ_Expd_i);
             InitDmatrixCol(pQ_Expd, &(pQ_Expd_i->data[0]), i);
+            DmatrixExpansionByCol(pQ, pQ_Expd);
         }
-        DmatrixExpansionByCol(pQ, pQ_Expd);
         DeleteDmatrix(&pQ_Expd);
 
         Dmatrix *pR_Expd;
@@ -152,7 +152,6 @@ int GS_QR(double *pInput, int InputRow, int InputCol)
         DmatrixExpansionByRow(pR, pR_Expd);
         DeleteDmatrix(&pR_Expd);
     }
-
     DeleteDvector(&pA_i);
     DeleteDvector(&pQ_i);
     DeleteDvector(&pV_i);
