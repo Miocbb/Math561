@@ -37,13 +37,9 @@ int main()
     //Lapack_Dgemv(pX, pR_Inv_A, pQb); /* X = R^-1 * Qb */
 
     
-<<<<<<< HEAD
     SolveUpTriMatrixEq(pR_A, pX, pQb);
     printf("coefficient vector Beta:\n");
-=======
-    printf("coefficient:\n");
     SolveUpTriMatrixEq(pR_A, pX, pQb);
->>>>>>> a2810e620ab355e2fedc123bd29479b58a6079dd
     ShowDvector(pX);
 
     Dvector *pResi, *pAX;
@@ -51,11 +47,7 @@ int main()
     pAX  = CreateDvector(4898);
     Lapack_Dgemv(pAX, pA, pX);
     DvectorArithmetic(pResi, 1, pAX, -1, pb );
-<<<<<<< HEAD
-    printf("Residue ||X*beta - y||2:\n%f\n", Dvector_2Norm(pResi));
-=======
     printf("Residue: %f\n", Dvector_2Norm(pResi));
->>>>>>> a2810e620ab355e2fedc123bd29479b58a6079dd
 
     DeleteDmatrixList( 5, &pA, &pQ_A, &pR_A, &pR_Inv_A, &pQ_T_A);
     DeleteDvectorList( 5, &pb, &pX, &pQb, &pResi, &pAX);

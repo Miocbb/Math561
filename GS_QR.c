@@ -17,8 +17,8 @@ int main()
     double Input1[3][2]={{1,2},
                          {0,1},
                          {1,0}};
-    double Input2[3][2]={{1,1},
-                         {2,2},
+    double Input2[3][2]={{1,2},
+                         {2,1},
                          {2,2}};
     
     printf("First Input\n");

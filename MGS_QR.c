@@ -8,52 +8,24 @@
 #define ARRAY_SIZE(array) (int)( sizeof(array)/sizeof(array[0]) )
 
 //#define DEBUG
-int MGS_QR(double *pInput, int InputRow, int InputCol);
+int MGS_qr(double *pInput, int InputRow, int InputCol);
 
 int main()
 {
-<<<<<<< HEAD
-<<<<<<< HEAD
     double Input1[]={1,0,1,2,1,0};
     double Input2[]={1,2,2,1,2,2};
     
     printf("First Input\n");
-    MGS_QR(Input1, 3,2);
+    MGS_qr(Input1, 3,2);
     
     printf("\n\n");
     printf("Second Input\n");
-    MGS_QR(Input2,3,2);
-=======
-    int InputRow, InputCol;
-    double Input1[3][2]={{1,2},
-                         {0,1},
-                         {1,0}};
-    double Input2[3][2]={{1,1},
-                         {2,2},
-                         {2,2}};
-=======
-    double Input1[]={1,0,1,2,1,0};
-    double Input2[]={1,2,2,1,2,2};
->>>>>>> a2810e620ab355e2fedc123bd29479b58a6079dd
-    
-    printf("First Input\n");
-    MGS_QR(Input1, 3,2);
-    
-    printf("\n\n");
-    printf("Second Input\n");
-<<<<<<< HEAD
-    InputRow = ARRAY_SIZE(Input2);
-    InputCol = ARRAY_SIZE(Input2[0]);
-    MGS_QR(Input2[0], InputRow, InputCol);
->>>>>>> 87995adf92c9459c817414c28f46e073c4292b50
-=======
-    MGS_QR(Input2,3,2);
->>>>>>> a2810e620ab355e2fedc123bd29479b58a6079dd
+    MGS_qr(Input2,3,2);
     return 1;
 }
 
 
-int MGS_QR(double *pInput, int InputRow, int InputCol)
+int MGS_qr(double *pInput, int InputRow, int InputCol)
 {
     printf("*******************************\n");
     printf(" Modified GS QR factorization\n");
@@ -126,7 +98,7 @@ int MGS_QR(double *pInput, int InputRow, int InputCol)
     printf("****************************** \n");
     printf("Show full MGS QR factorization\n");
     printf("****************************** \n");
-    if(pA->nDimCol<pA->nDimRow)
+    if(pA->nDimCol < pA->nDimRow)
     {
         Dmatrix *pQ_Expd; 
         Dvector *pQ_Expd_i;
