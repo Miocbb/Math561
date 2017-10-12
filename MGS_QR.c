@@ -12,24 +12,15 @@ int MGS_QR(double *pInput, int InputRow, int InputCol);
 
 int main()
 {
-    int InputRow, InputCol;
-    double Input1[3][2]={{1,2},
-                         {0,1},
-                         {1,0}};
-    double Input2[3][2]={{1,1},
-                         {2,2},
-                         {2,2}};
+    double Input1[]={1,0,1,2,1,0};
+    double Input2[]={1,2,2,1,2,2};
     
     printf("First Input\n");
-    InputRow = ARRAY_SIZE(Input1);
-    InputCol = ARRAY_SIZE(Input1[0]);
-    MGS_QR(Input1[0], InputRow, InputCol);
+    MGS_QR(Input1, 3,2);
     
     printf("\n\n");
     printf("Second Input\n");
-    InputRow = ARRAY_SIZE(Input2);
-    InputCol = ARRAY_SIZE(Input2[0]);
-    MGS_QR(Input2[0], InputRow, InputCol);
+    MGS_QR(Input2,3,2);
     return 1;
 }
 

@@ -7,6 +7,6 @@
 #    -Wl,-rpath,/usr/lib \
 #    -std=c99
 
-gcc -I./include GS_QR.c source/*.c\
-    -llapack -lblas -std=c99 -o Execute/GS_QR.exe
+gcc -I./include HW4_a.c source/*.c\
+    -llapack -lblas -std=c99 -o Execute/HW4_a.exe
 
