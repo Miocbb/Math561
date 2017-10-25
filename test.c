@@ -4,7 +4,6 @@
 #include"QR.h"
 #include"least_square.h"
 
-
 int main()
 {
     /*
