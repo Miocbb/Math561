@@ -112,16 +112,9 @@ void PP_LU(Dmatrix *pA, Dmatrix *pL, Dmatrix *pU, int *pP)
     }
 }
 
-
-int main()
+int do_PP_LU(int m, int n, double *inp)
 {
-    double inp[]={1,2,3,
-                  4,5,6,
-                  7,8,9,
-                  10,11,12};
-    int m=3;
-    int n=4;
-    int P[3];
+    int P[m];
     Dmatrix *pA, *pL, *pU, *pP;
 
     pA = CreateDmatrix(m,n);
@@ -135,12 +128,61 @@ int main()
     printf("PA = LU\n");
     printf("matrix A\n");
     ShowDmatrix(pA);
-    printf("matrix L\n");
+    printf("\nmatrix L\n");
     ShowDmatrix(pL);
-    printf("matrix U\n");
+    printf("\nmatrix U\n");
     ShowDmatrix(pU);
-    printf("matrix P\n");
+    printf("\nmatrix P\n");
     ShowDmatrix(pP);
     DeleteDmatrixList(4, &pA, &pL, &pU, &pP);
+    return 0;
+}
+
+int create_HW_matrix(int n, double *out)
+{
+    for(int i=0; i<n; i++)
+    {
+        for(int j=0; j<n; j++)
+        {
+            if(i == j)
+                out[i+j*n] = 1;
+            else if (i>j)
+                out[i+j*n] = -1;
+            else if (j==n-1)
+                out[i+j*n] = 1;
+            else
+                out[i+j*n] = 0;
+        }
+    }
+    return 0;
+}
+
+int main()
+{
+    printf("**************************\n");
+    double inp1[]={2,4,8,6,
+                  1,3,7,7,
+                  1,3,9,9,
+                  0,1,5,8};
+    int m=4;
+    int n=4;
+    do_PP_LU(m, n, inp1);
+    printf("**************************\n");
+
+    //8 * 8
+    printf("**************************\n");
+    double inp2[64];
+    create_HW_matrix(8, inp2);
+    do_PP_LU(8,8,inp2);
+    printf("**************************\n");
+    printf("\n");
+
+    // 100 * 100
+    printf("**************************\n");
+    m=n=100;
+    double inp3[10000];
+    create_HW_matrix(100, inp3);
+    do_PP_LU(100, 100, inp3);
+    printf("**************************\n");
     return 0;
 }

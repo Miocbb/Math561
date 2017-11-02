@@ -77,16 +77,109 @@ void ShowDmatrix(Dmatrix *pMatrix)
         printf("ShowDmatrix: Dmatrix is NULL!\n");
         return;
     }
-    int i, j;
-    for(i=0; i<pMatrix->nDimRow; i++)
+    int i;
+    if (pMatrix->nDimRow <9)
+    {
+        for(i=0; i<pMatrix->nDimRow; i++)
+        {
+            ShowDmatrixRow(pMatrix, i);
+            printf("\n");
+        }
+    }
+    else
+    {
+        for(i=0; i<pMatrix->nDimRow; i++)
+        {
+            if (i<4)
+            {
+                ShowDmatrixRow(pMatrix, i);
+                printf("\n");
+            }
+            else if (i==4)
+            {
+                ShowCdotRow(pMatrix);
+                printf("\n");
+            }
+            else if (i>=pMatrix->nDimCol-4)
+            {
+                ShowDmatrixRow(pMatrix, i);
+                printf("\n");
+            }
+
+        }
+    }
+}
+
+void ShowCdotRow(Dmatrix *pMatrix)
+    /* show cdots */
+{
+    int j;
+    if (pMatrix->nDimCol >= 9)
+    {
+        for(int i=0; i<3; i++)
+        {
+            for(j=0; j<pMatrix->nDimCol; j++) 
+            {
+                if(j<4)
+                    printf("   .   ");
+                else if(j>=pMatrix->nDimCol-4)
+                    printf("   .   ");
+                else if(j==4)
+                    printf("      ");
+            }
+            if(i!=2)
+                printf("\n");
+        }
+    }
+    else
+    {
+        for(int i=0; i<3; i++)
+        {
+            for(j=0; j<pMatrix->nDimCol; j++) 
+            {
+                printf("   .   ");
+            }
+            if(i != 3)
+                printf("\n");
+        }
+    }
+}
+
+void ShowDmatrixRow(Dmatrix *pMatrix, int i)
+    /* show ith row of matrix A*/
+{
+    int j;
+    if (pMatrix->nDimCol >= 9)
     {
         for(j=0; j<pMatrix->nDimCol; j++) 
         {
-            printf("%.3f ", pMatrix->data[j*(pMatrix->nDimRow) + i]);
+            if(j<4)
+                //printf("%.3f ", pMatrix->data[j*(pMatrix->nDimRow) + i]);
+                print_num(pMatrix->data[j*(pMatrix->nDimRow) + i]);
+            else if(j>=pMatrix->nDimCol-4)
+                //printf("%.3f ", pMatrix->data[j*(pMatrix->nDimRow) + i]);
+                print_num(pMatrix->data[j*(pMatrix->nDimRow) + i]);
+            else if (j==4)
+                printf("... ");
         }
-        printf("\n");
+    }
+    else
+    {
+        for(j=0; j<pMatrix->nDimCol; j++) 
+            printf("%.3f ", pMatrix->data[j*(pMatrix->nDimRow) + i]);
     }
 }
+
+void print_num(double num)
+{
+    if(num >1000)
+    {
+        printf("%6.3e ", num);
+    }
+    else
+        printf("%6.3f ", num);
+}
+
 
 void InitDmatrixRow(Dmatrix *pMatrix, double *pArray, int Row)
 {

@@ -18,6 +18,9 @@ void DeleteDmatrixList(int count, Dmatrix **pMatrix, ...);
 void RandomDmatrix(Dmatrix *pMatrix);
 void InitDmatrix(Dmatrix *pMatrix, double *pArray);
 void ShowDmatrix(Dmatrix *pMatrix);
+void ShowDmatrixRow(Dmatrix *pMatrix, int i);
+void ShowCdotRow(Dmatrix *pMatrix);
+void print_num(double num);
 void InitDmatrixRow(Dmatrix *pMatrix, double *pArray, int Row);
 void InitDmatrixCol(Dmatrix *pMatrix, double *pArray, int Row);
 
