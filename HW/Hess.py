@@ -38,13 +38,15 @@ def Hess(matrix_A):
     Household Reduction to Hessenberg From.
 
     input:  <type: 2d-np.array> matrix_A real or complex
-    return: <type: 2d-np.array> A
+    return: <type: 2d-np.array> H, Q
+    Q * H * Q.T = matrix_A
     """
     A = matrix_A.copy().astype(float)
     shape = A.shape
     if shape[0] != shape[1]:
         SigExit("Matrix is not square.")
     dim = shape[0]
+    Q = np.identity(dim)
     for k in range(dim-2):
         v_k = A[k+1:, k].copy()
         v_k[0] += sign(v_k[0]) * np.linalg.norm(v_k)
@@ -52,16 +54,19 @@ def Hess(matrix_A):
         v_k = vvect(v_k)
         A[k+1:, k:] -= 2*v_k.dot( (v_k.conj().T).dot(A[k+1:, k:]) )
         A[:, k+1:]  -= 2*(A[:, k+1:].dot(v_k)).dot(v_k.conj().T)
-    return A
-
+        Q[:, k+1:]  -= 2*(Q[:, k+1:].dot(v_k)).dot(v_k.conj().T)
+    H = A
+    return H, Q
 
 def main():
-    A=np.arange(16).reshape(4,4)
+    A=np.random.rand(10,10)
+    A = (A+A.T)/2
     np.set_printoptions(precision=3, suppress=True)
     print "Input matrix A:"
     print A
     print "\nHessenberg form of matrix A:"
-    print Hess(A)
+    H, Q = Hess(A)
+    print H
 
 
 if __name__ == "__main__":
