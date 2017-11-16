@@ -123,6 +123,7 @@ def error(A, Sigma, X):
     eiw = np.diag(eiw)
     my_eiw -= eiw
     my_eiv -= eiv
+    print "Error analysis: the results are compared with ones from numpy.linalg.eig()."
     print "error analysis for the whole decomposition:"
     print "error of eigenvalues: %f" %(LA.norm(my_eiw, ord='fro')/LA.norm(eiw, ord='fro'))
     print "error of eigenvectors: %f" %(LA.norm(my_eiv, ord='fro')/LA.norm(eiv, ord='fro'))
